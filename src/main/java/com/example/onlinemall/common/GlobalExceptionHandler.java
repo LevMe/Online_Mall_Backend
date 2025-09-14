@@ -34,6 +34,17 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * 专门捕获自定义的业务异常
+     * @param e BusinessException 业务异常对象
+     * @return 包含具体业务错误信息的响应
+     */
+    @ExceptionHandler(BusinessException.class)
+    public Result<?> handleBusinessException(BusinessException e) {
+        // 直接使用业务异常中定义的 code 和 message
+        return Result.error(e.getCode(), e.getMessage());
+    }
+
+    /**
      * 处理其他所有未捕获的异常 (Exception)
      * 这是一个兜底的异常处理器
      * @param e 捕获到的异常对象

@@ -2,11 +2,15 @@ package com.example.onlinemall.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.onlinemall.common.BusinessException;
 import com.example.onlinemall.dto.ViewCartResponse;
 import com.example.onlinemall.entity.CartItem;
+import com.example.onlinemall.entity.Product;
 import com.example.onlinemall.mapper.CartItemMapper;
 import com.example.onlinemall.service.CartItemService;
+import com.example.onlinemall.service.ProductService;
 import com.example.onlinemall.vo.CartItemDetailVO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -19,16 +23,46 @@ import java.util.UUID;
 @Service
 public class CartItemServiceImpl extends ServiceImpl<CartItemMapper, CartItem> implements CartItemService {
 
-    // ... (addItemToCart 和 viewCart 方法保持不变)
+
+    // 引入 ProductService 以便查询商品信息
+    @Autowired
+    private ProductService productService;
+
+    /**
+     * 添加商品到购物车 (已修复库存校验逻辑)
+     *
+     * @param userId    用户ID
+     * @param productId 商品ID
+     * @param quantity  要添加的数量
+     */
     @Override
     public void addItemToCart(Long userId, Long productId, Integer quantity) {
+        // 1. 查询商品是否存在以及其库存
+        Product product = productService.getById(productId);
+        if (product == null) {
+            throw new RuntimeException("商品不存在");
+        }
+
+        // 2. 查找购物车中是否已有此商品
         QueryWrapper<CartItem> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_id", userId).eq("product_id", productId);
         CartItem existingItem = this.baseMapper.selectOne(queryWrapper);
+
         if (existingItem != null) {
-            existingItem.setQuantity(existingItem.getQuantity() + quantity);
+            // 购物车中已存在该商品
+            int expectedQuantity = existingItem.getQuantity() + quantity;
+            // 3. 校验库存
+            if (expectedQuantity > product.getStock()) {
+                throw new BusinessException("商品库存不足");
+            }
+            existingItem.setQuantity(expectedQuantity);
             this.baseMapper.updateById(existingItem);
         } else {
+            // 购物车中不存在该商品
+            // 3. 校验库存
+            if (quantity > product.getStock()) {
+                throw new BusinessException("商品库存不足");
+            }
             CartItem newItem = new CartItem();
             newItem.setId(UUID.randomUUID().toString());
             newItem.setUserId(userId);
@@ -41,9 +75,7 @@ public class CartItemServiceImpl extends ServiceImpl<CartItemMapper, CartItem> i
     @Override
     public ViewCartResponse viewCart(Long userId) {
         List<CartItemDetailVO> items = this.baseMapper.findCartItemDetailsByUserId(userId);
-        BigDecimal totalPrice = items.stream()
-                .map(item -> item.getPrice().multiply(new BigDecimal(item.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal totalPrice = items.stream().map(item -> item.getPrice().multiply(new BigDecimal(item.getQuantity()))).reduce(BigDecimal.ZERO, BigDecimal::add);
         return new ViewCartResponse(totalPrice, items);
     }
 
