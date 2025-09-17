@@ -35,7 +35,7 @@ public class ProductController {
             @RequestParam(required = false) Integer categoryId,
             @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "1") Integer pageNo,
-            @RequestParam(defaultValue = "10") Integer pageSize
+            @RequestParam(defaultValue = "8") Integer pageSize
     ) {
         // ... (原有列表查询代码保持不变)
         Page<Product> page = new Page<>(pageNo, pageSize);
