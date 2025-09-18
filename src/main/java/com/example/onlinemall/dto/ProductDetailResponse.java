@@ -16,6 +16,7 @@ public class ProductDetailResponse {
     private String name;
     private BigDecimal price;
     private Integer stock;
+    private Integer sales;
     private String description;
     private List<String> imageUrls;
     private Map<String, Object> specs;

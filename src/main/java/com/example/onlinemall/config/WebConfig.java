@@ -29,7 +29,8 @@ public class WebConfig implements WebMvcConfigurer {
                 .addPathPatterns(
                         "/users/me",
                         "/cart/**",
-                        "/behaviors/track"
+                        "/behaviors/track",
+                        "/orders/**"
                 )
                 .excludePathPatterns(
                         "/users/register",

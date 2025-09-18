@@ -14,4 +14,5 @@ public class ProductListItemResponse {
     private int stock;
     private BigDecimal price;
     private String mainImageUrl;
+    private Integer sales;
 }

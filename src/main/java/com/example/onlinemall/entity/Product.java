@@ -46,6 +46,11 @@ public class Product {
     private Integer stock;
 
     /**
+     * 商品销量
+     */
+    private Integer sales;
+
+    /**
      * 所属分类ID
      */
     private Integer categoryId;
