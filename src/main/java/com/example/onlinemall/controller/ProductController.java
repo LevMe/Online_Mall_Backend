@@ -37,7 +37,6 @@ public class ProductController {
             @RequestParam(defaultValue = "1") Integer pageNo,
             @RequestParam(defaultValue = "8") Integer pageSize
     ) {
-        // ... (原有列表查询代码保持不变)
         Page<Product> page = new Page<>(pageNo, pageSize);
         IPage<Product> productPage = productService.getProductPage(page, categoryId, keyword);
         List<ProductListItemResponse> itemResponses = productPage.getRecords().stream().map(product -> {
