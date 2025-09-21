@@ -47,13 +47,15 @@ public class JwtInterceptor implements HandlerInterceptor {
         try {
             // 4. 解析和验证Token
             Claims claims = jwtUtil.validateToken(token);
-            String userIdStr = claims.get("userId", String.class);
-            if (userIdStr == null) {
-                throw new RuntimeException("Invalid token: Missing userId");
+            // 【重要修正】直接将 "userId" claim 解析为 Long 类型
+            Long userId = claims.get("userId", Long.class);
+            if (userId == null) {
+                // 如果解析出的userId是null，说明Token有问题
+                throw new RuntimeException("Invalid token: Missing userId claim");
             }
 
             // 5. 将用户ID存入ThreadLocal，方便后续Controller使用
-            userThreadLocal.set(Long.parseLong(userIdStr));
+            userThreadLocal.set(userId);
 
             // 6. 放行
             return true;
