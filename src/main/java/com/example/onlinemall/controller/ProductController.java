@@ -89,7 +89,7 @@ public class ProductController {
     @GetMapping("/recommendations")
     public Result<List<ProductListItemResponse>> getRecommendations(
             @RequestHeader(value = "Authorization", required = false) String token,
-            @RequestParam(defaultValue = "15") Integer pageSize
+            @RequestParam(defaultValue = "8") Integer pageSize
     ) {
         Long userId = null;
         if (token != null && token.startsWith("Bearer ")) {
@@ -101,6 +101,7 @@ public class ProductController {
             } catch (Exception e) {
                 // Token 无效（过期、签名错误等），忽略异常，userId 保持为 null
                 // 这样后续会自然地走公共推荐逻辑
+                System.out.println("Invalid token: " + e.getMessage());
             }
         }
 

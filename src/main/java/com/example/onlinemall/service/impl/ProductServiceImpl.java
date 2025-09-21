@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @Service
 public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> implements ProductService {
 
-    private static final int MIN_BEHAVIORS_FOR_RECOMMENDATION = 50;
+    private static final int MIN_BEHAVIORS_FOR_RECOMMENDATION = 10;
 
     @Autowired
     private UserBehaviorMapper userBehaviorMapper;
