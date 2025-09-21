@@ -46,7 +46,7 @@ public class JwtInterceptor implements HandlerInterceptor {
 
         try {
             // 4. 解析和验证Token
-            Claims claims = jwtUtil.parseToken(token);
+            Claims claims = jwtUtil.validateToken(token);
             String userIdStr = claims.get("userId", String.class);
             if (userIdStr == null) {
                 throw new RuntimeException("Invalid token: Missing userId");

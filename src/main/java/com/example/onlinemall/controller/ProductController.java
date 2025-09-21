@@ -7,6 +7,7 @@ import com.example.onlinemall.dto.PageResponse;
 import com.example.onlinemall.dto.ProductDetailResponse;
 import com.example.onlinemall.dto.ProductListItemResponse;
 import com.example.onlinemall.entity.Product;
+import com.example.onlinemall.util.JwtUtil;
 import com.example.onlinemall.service.ProductService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +24,12 @@ import java.util.stream.Collectors;
 public class ProductController {
 
     private final ProductService productService;
+    private final JwtUtil jwtUtil; // 依赖注入JwtUtil
 
     @Autowired
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, JwtUtil jwtUtil) {
         this.productService = productService;
+        this.jwtUtil = jwtUtil; // 初始化
     }
 
     @GetMapping
@@ -75,5 +78,40 @@ public class ProductController {
 
         // 4. 返回成功响应
         return Result.success(response, "获取成功");
+    }
+
+    /**
+     * 获取推荐商品列表
+     * @param token 用户认证Token (可选)
+     * @param pageSize 返回的商品数量
+     * @return 推荐商品列表
+     */
+    @GetMapping("/recommendations")
+    public Result<List<ProductListItemResponse>> getRecommendations(
+            @RequestHeader(value = "Authorization", required = false) String token,
+            @RequestParam(defaultValue = "15") Integer pageSize
+    ) {
+        Long userId = null;
+        if (token != null && token.startsWith("Bearer ")) {
+            String jwt = token.substring(7);
+            try {
+                // 3. 使用注入的 jwtUtil 实例安全地验证和解析Token
+                jwtUtil.validateToken(jwt); // 首先验证，如果失败会抛出异常
+                userId = jwtUtil.getUserIdFromToken(jwt); // 验证成功后提取userId
+            } catch (Exception e) {
+                // Token 无效（过期、签名错误等），忽略异常，userId 保持为 null
+                // 这样后续会自然地走公共推荐逻辑
+            }
+        }
+
+        List<Product> products = productService.getRecommendedProducts(userId, pageSize);
+
+        List<ProductListItemResponse> responseItems = products.stream().map(product -> {
+            ProductListItemResponse responseItem = new ProductListItemResponse();
+            BeanUtils.copyProperties(product, responseItem);
+            return responseItem;
+        }).collect(Collectors.toList());
+
+        return Result.success(responseItems, "获取推荐商品成功");
     }
 }

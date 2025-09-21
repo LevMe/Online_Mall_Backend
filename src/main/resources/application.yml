@@ -31,3 +31,16 @@ global-config:
 configuration:
   # ??MyBatis???????????????SQL??
   log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# 推荐服务配置
+recommendation:
+  service:
+    url: http://127.0.0.1:5000/recommend # 推荐算法服务的地址，请根据实际情况修改
+
+
+# JWT 配置
+jwt:
+  # 用于签名和验证的密钥，请务必修改为一个长且复杂的随机字符串
+  secret: YourSuperLongAndSecureSecretKeyForJWTGenerationMustBeAtLeast256Bits
+  # Token的过期时间 (毫秒)，这里设置为7天
+  expiration: 604800000

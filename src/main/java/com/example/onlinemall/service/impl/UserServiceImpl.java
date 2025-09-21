@@ -67,11 +67,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
 
         // 4. 登录成功，生成JWT Token，并传入角色信息
-        String token = jwtUtil.generateToken(
-                user.getId().toString(),
-                user.getUsername(),
-                user.getRole() // <-- 传入角色
-        );
+        String token = jwtUtil.generateToken(user.getId(), user.getRole());
 
         // 5. 构建并返回 UserLoginResponse 对象
         UserLoginResponse.UserInfo userInfo = new UserLoginResponse.UserInfo(
