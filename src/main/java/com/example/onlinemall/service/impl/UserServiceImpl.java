@@ -13,6 +13,7 @@ import com.example.onlinemall.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+import org.springframework.util.StringUtils; // 确保引入了 StringUtils
 
 /**
  * 用户服务实现类
@@ -22,12 +23,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     private final JwtUtil jwtUtil;
 
-    // 使用构造函数注入 JwtUtil
     @Autowired
     public UserServiceImpl(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
     }
 
+    // ... login 和 register 方法保持不变 ...
     @Override
     public User register(String username, String password, String email) {
         // ... (原有的注册代码保持不变)
@@ -84,10 +85,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public Page<User> getUsers(Page<User> page) {
-        return this.baseMapper.selectPage(page, null);
+    public Page<User> getUsers(Page<User> page, String keyword) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        if (StringUtils.hasText(keyword)) {
+            // 【关键修正】使用 and 和 lambda 表达式来确保 OR 条件的正确分组
+            // 这会生成 SQL: WHERE (username LIKE ? OR email LIKE ?)
+            queryWrapper.lambda().and(wrapper ->
+                    wrapper.like(User::getUsername, keyword)
+                            .or()
+                            .like(User::getEmail, keyword)
+            );
+        }
+        return this.baseMapper.selectPage(page, queryWrapper);
     }
 
+    // ... createUser, updateUser, deleteUser 方法保持不变 ...
     @Override
     public User createUser(CreateUserRequest request) {
         User user = new User();

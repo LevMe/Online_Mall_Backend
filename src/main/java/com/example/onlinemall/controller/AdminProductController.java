@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
  * 管理员商品管理控制器
  */
 @RestController
-@RequestMapping("/admin/products") // 路径前缀 /api/v1/admin/products
+@RequestMapping("/admin/products")
 public class AdminProductController {
 
     private final ProductService productService;
@@ -27,9 +27,13 @@ public class AdminProductController {
     @GetMapping
     public Result<PageResponse<Product>> getProducts(
             @RequestParam(defaultValue = "1") Integer pageNo,
-            @RequestParam(defaultValue = "10") Integer pageSize) {
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            @RequestParam(required = false) String keyword) { // 确保有 keyword 参数
         Page<Product> page = new Page<>(pageNo, pageSize);
-        Page<Product> productPage = productService.page(page); // 使用MyBatis-Plus自带的分页查询
+
+        // 【关键】确保这里调用的是 getProductPage，而不是 IService 自带的 page
+        Page<Product> productPage = (Page<Product>) productService.getProductPage(page, null, keyword);
+
         PageResponse<Product> pageResponse = new PageResponse<>(
                 productPage.getTotal(),
                 productPage.getCurrent(),

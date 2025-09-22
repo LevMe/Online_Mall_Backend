@@ -31,7 +31,13 @@ public interface UserService extends IService<User> {
      */
     UserLoginResponse login(String username, String password);
 
-    Page<User> getUsers(Page<User> page);
+    /**
+     * 分页获取用户列表，支持按关键词搜索
+     * @param page 分页对象
+     * @param keyword 搜索关键词 (可选)
+     * @return 用户分页数据
+     */
+    Page<User> getUsers(Page<User> page, String keyword);
 
     User createUser(CreateUserRequest request);
 

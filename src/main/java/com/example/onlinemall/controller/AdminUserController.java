@@ -21,9 +21,12 @@ public class AdminUserController {
     @GetMapping
     public Result<PageResponse<User>> getUsers(
             @RequestParam(defaultValue = "1") Integer pageNo,
-            @RequestParam(defaultValue = "10") Integer pageSize) {
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            // 添加 keyword 请求参数，非必需
+            @RequestParam(required = false) String keyword) {
         Page<User> page = new Page<>(pageNo, pageSize);
-        Page<User> userPage = userService.getUsers(page);
+        // 调用更新后的 service 方法
+        Page<User> userPage = userService.getUsers(page, keyword);
         PageResponse<User> pageResponse = new PageResponse<>(
                 userPage.getTotal(),
                 userPage.getCurrent(),
