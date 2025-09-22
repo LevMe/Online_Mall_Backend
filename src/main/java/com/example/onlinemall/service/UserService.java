@@ -1,6 +1,9 @@
 package com.example.onlinemall.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.onlinemall.dto.CreateUserRequest;
+import com.example.onlinemall.dto.UpdateUserRequest;
 import com.example.onlinemall.dto.UserLoginResponse;
 import com.example.onlinemall.entity.User;
 
@@ -27,5 +30,13 @@ public interface UserService extends IService<User> {
      * @return 包含Token和用户信息的响应对象
      */
     UserLoginResponse login(String username, String password);
+
+    Page<User> getUsers(Page<User> page);
+
+    User createUser(CreateUserRequest request);
+
+    User updateUser(Long userId, UpdateUserRequest request);
+
+    void deleteUser(Long userId);
 
 }

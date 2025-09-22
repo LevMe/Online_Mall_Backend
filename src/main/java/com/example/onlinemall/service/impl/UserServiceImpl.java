@@ -1,7 +1,10 @@
 package com.example.onlinemall.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.onlinemall.dto.CreateUserRequest;
+import com.example.onlinemall.dto.UpdateUserRequest;
 import com.example.onlinemall.dto.UserLoginResponse;
 import com.example.onlinemall.entity.User;
 import com.example.onlinemall.mapper.UserMapper;
@@ -73,9 +76,46 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         UserLoginResponse.UserInfo userInfo = new UserLoginResponse.UserInfo(
                 user.getId().toString(),
                 user.getUsername(),
-                user.getAvatarUrl()
+                user.getAvatarUrl(),
+                user.getRole() // 新增：填充角色信息
         );
 
         return new UserLoginResponse(token, userInfo);
+    }
+
+    @Override
+    public Page<User> getUsers(Page<User> page) {
+        return this.baseMapper.selectPage(page, null);
+    }
+
+    @Override
+    public User createUser(CreateUserRequest request) {
+        User user = new User();
+        user.setUsername(request.getUsername());
+        user.setPassword(DigestUtils.md5DigestAsHex(request.getPassword().getBytes()));
+        user.setEmail(request.getEmail());
+        user.setRole(request.getRole());
+        this.baseMapper.insert(user);
+        user.setPassword(null);
+        return user;
+    }
+
+    @Override
+    public User updateUser(Long userId, UpdateUserRequest request) {
+        User user = this.baseMapper.selectById(userId);
+        if (user == null) {
+            throw new RuntimeException("用户不存在");
+        }
+        user.setUsername(request.getUsername());
+        user.setEmail(request.getEmail());
+        user.setRole(request.getRole());
+        this.baseMapper.updateById(user);
+        user.setPassword(null);
+        return user;
+    }
+
+    @Override
+    public void deleteUser(Long userId) {
+        this.baseMapper.deleteById(userId);
     }
 }

@@ -32,5 +32,6 @@ public class UserLoginResponse {
         private String userId;
         private String username;
         private String avatarUrl;
+        private String role; // 新增：用户角色
     }
 }
