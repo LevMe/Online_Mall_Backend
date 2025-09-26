@@ -12,6 +12,6 @@ public class TrackBehaviorRequest {
     private String eventType; // 'click', 'addToCart', 'purchase'
     private Long productId;
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
     private LocalDateTime timestamp;
 }
