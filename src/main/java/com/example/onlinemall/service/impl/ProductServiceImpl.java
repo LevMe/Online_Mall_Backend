@@ -12,6 +12,7 @@ import com.example.onlinemall.service.ProductService;
 import com.example.onlinemall.service.RecommendationService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -24,7 +25,8 @@ import java.util.stream.Collectors;
 @Service
 public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> implements ProductService {
 
-    private static final int MIN_BEHAVIORS_FOR_RECOMMENDATION = 10;
+    @Value("${app.recommendation.min-behaviors}")
+    private int minBehaviorsForRecommendation;
 
     @Autowired
     private UserBehaviorMapper userBehaviorMapper;
@@ -86,7 +88,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
             queryWrapper.eq("user_id", userId).eq("event_type", "click");
             Long behaviorCount = userBehaviorMapper.selectCount(queryWrapper);
 
-            if (behaviorCount > MIN_BEHAVIORS_FOR_RECOMMENDATION) {
+            if (behaviorCount > minBehaviorsForRecommendation) {
                 // 1. 获取用户最近点击的商品ID列表 (这里简化为获取所有点击，实际可按时间排序)
                 queryWrapper.select("product_id").last("LIMIT 100"); // 限制数量防止过大
                 List<UserBehavior> behaviors = userBehaviorMapper.selectList(queryWrapper);

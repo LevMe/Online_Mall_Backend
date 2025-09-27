@@ -42,7 +42,9 @@ recommendation:
   trigger-training-endpoint:
     url: http://127.0.0.1:5000/trigger_training
 
-
+app:
+  recommendation:
+    min-behaviors: 10
 
 # JWT 配置
 jwt:
