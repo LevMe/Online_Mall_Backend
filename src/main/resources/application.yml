@@ -34,7 +34,10 @@ mybatis-plus:
 # 推荐服务配置
 recommendation:
   service:
-    url: http://127.0.0.1:5000/recommend # 推荐算法服务的地址，请根据实际情况修改
+    url: http://127.0.0.1:5000/recommend # 推荐算法服务的地址
+  trigger-training-endpoint:
+    url: http://127.0.0.1:5000/trigger_training
+
 
 
 # JWT 配置

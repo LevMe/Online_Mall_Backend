@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.onlinemall.entity.UserBehavior;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 用户行为服务接口
@@ -18,4 +19,6 @@ public interface UserBehaviorService extends IService<UserBehavior> {
      * @param timestamp 事件时间戳
      */
     void trackBehavior(Long userId, Long productId, String eventType, LocalDateTime timestamp);
+
+    List<UserBehavior> getAllBehaviors();
 }

@@ -7,6 +7,7 @@ import com.example.onlinemall.service.UserBehaviorService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 用户行为服务实现类
@@ -24,5 +25,10 @@ public class UserBehaviorServiceImpl extends ServiceImpl<UserBehaviorMapper, Use
 
         // 将行为数据插入数据库
         this.baseMapper.insert(behavior);
+    }
+
+    @Override
+    public List<UserBehavior> getAllBehaviors() {
+        return baseMapper.selectAll();
     }
 }
