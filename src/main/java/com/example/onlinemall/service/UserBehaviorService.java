@@ -1,18 +1,14 @@
 package com.example.onlinemall.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.example.onlinemall.entity.UserBehavior;
-
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
- * 用户行为服务接口
+ * 用户行为服务接口 - (已改造为写入ClickHouse)
  */
-public interface UserBehaviorService extends IService<UserBehavior> {
+public interface UserBehaviorService {
 
     /**
-     * 记录一条用户行为
+     * 记录一条用户行为到ClickHouse
      * @param userId 用户ID
      * @param productId 商品ID
      * @param eventType 事件类型
@@ -20,5 +16,4 @@ public interface UserBehaviorService extends IService<UserBehavior> {
      */
     void trackBehavior(Long userId, Long productId, String eventType, LocalDateTime timestamp);
 
-    List<UserBehavior> getAllBehaviors();
 }

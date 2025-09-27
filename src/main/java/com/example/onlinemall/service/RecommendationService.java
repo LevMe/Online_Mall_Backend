@@ -4,7 +4,6 @@ import com.example.onlinemall.dto.RecommendationRequest;
 import com.example.onlinemall.dto.RecommendationResponse;
 import com.example.onlinemall.dto.TriggerTrainingRequest;
 import com.example.onlinemall.dto.UserBehaviorDTO;
-import com.example.onlinemall.entity.UserBehavior;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
