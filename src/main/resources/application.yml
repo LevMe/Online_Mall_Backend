@@ -13,9 +13,11 @@ spring:
     password: 10086111
     driver-class-name: com.mysql.cj.jdbc.Driver
   clickhouse:
-    url: jdbc:ch:http://localhost:8123/online_mall # 你的 ClickHouse 地址
-    username: default # 你的 ClickHouse 用户名
+    url: jdbc:clickhouse://localhost:8123/online_mall
+    username: default
     password: 10086111
+    driver-class-name: ru.yandex.clickhouse.ClickHouseDriver
+
 
 # Jackson JSON ?? (????API?JSON??)
 jackson:

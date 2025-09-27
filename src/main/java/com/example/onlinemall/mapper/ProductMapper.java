@@ -9,5 +9,4 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface ProductMapper extends BaseMapper<Product> {
-    // 暂时不需要自定义SQL，Mybatis-Plus的QueryWrapper足够应对当前的需求
 }

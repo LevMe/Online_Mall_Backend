@@ -90,6 +90,13 @@
             <artifactId>clickhouse-jdbc</artifactId>
             <version>0.5.0</version> <classifier>http</classifier>
         </dependency>
+        
+        <!-- Apache HttpClient 5 required by ClickHouse JDBC -->
+        <dependency>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+            <version>5.2.1</version>
+        </dependency>
     </dependencies>
 
     <!-- Maven 构建配置 -->

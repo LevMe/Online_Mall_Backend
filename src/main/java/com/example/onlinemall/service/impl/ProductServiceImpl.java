@@ -7,7 +7,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.onlinemall.dto.AddProductRequest;
 import com.example.onlinemall.dto.UpdateProductRequest;
 import com.example.onlinemall.entity.Product;
+import com.example.onlinemall.entity.UserBehavior;
 import com.example.onlinemall.mapper.ProductMapper;
+import com.example.onlinemall.mapper.UserBehaviorMapper;
 import com.example.onlinemall.service.ProductService;
 import com.example.onlinemall.service.RecommendationService;
 import org.springframework.beans.BeanUtils;
@@ -84,14 +86,11 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     public List<Product> getRecommendedProducts(Long userId, Integer pageSize) {
         // 检查用户是否登录以及行为数据是否充足
         if (userId != null) {
-            QueryWrapper<UserBehavior> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("user_id", userId).eq("event_type", "click");
-            Long behaviorCount = userBehaviorMapper.selectCount(queryWrapper);
+            Long behaviorCount = userBehaviorMapper.selectCount(userId);
 
             if (behaviorCount > minBehaviorsForRecommendation) {
                 // 1. 获取用户最近点击的商品ID列表 (这里简化为获取所有点击，实际可按时间排序)
-                queryWrapper.select("product_id").last("LIMIT 100"); // 限制数量防止过大
-                List<UserBehavior> behaviors = userBehaviorMapper.selectList(queryWrapper);
+                List<UserBehavior> behaviors = userBehaviorMapper.findRecentClicksByUserId(userId, 15); // 限制数量防止过大
                 List<String> recentClicks = behaviors.stream()
                         .map(b -> String.valueOf(b.getProductId()))
                         .collect(Collectors.toList());
