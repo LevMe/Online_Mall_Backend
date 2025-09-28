@@ -1,10 +1,11 @@
 package com.example.onlinemall.mapper;
 
-import com.clickhouse.jdbc.ClickHouseDataSource;
 import com.example.onlinemall.entity.UserBehavior;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource; // <--- 1. 修改导入
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,21 +13,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 用于操作ClickHouse中用户行为数据的Mapper
- */
 @Repository
 public class UserBehaviorMapper {
 
-    @Autowired
-    private ClickHouseDataSource clickHouseDataSource;
+    private final DataSource clickHouseDataSource; // <--- 2. 将类型改为通用的 DataSource
 
-    /**
-     * 根据用户ID和事件类型统计行为数量
-     *
-     * @param userId    用户ID
-     * @return 行为数量
-     */
+    @Autowired
+    public UserBehaviorMapper(@Qualifier("clickhouseDataSource") DataSource clickHouseDataSource) { // <--- 3. 在构造函数中也修改类型
+        this.clickHouseDataSource = clickHouseDataSource;
+    }
+
+    // ... a
+    // ... (mapper中的其他方法保持不变)
     public Long selectCount(Long userId) {
         // SQL查询语句，注意表名应为 'user_behaviors'
         String sql = "SELECT count() FROM user_behaviors WHERE user_id = ?";
@@ -54,7 +52,7 @@ public class UserBehaviorMapper {
     public List<UserBehavior> findRecentClicksByUserId(Long userId, int limit) {
         List<UserBehavior> behaviors = new ArrayList<>();
         // SQL查询语句，按时间倒序排列
-        String sql = "SELECT product_id FROM user_behaviors WHERE user_id = ? AND event_type = 'click' ORDER BY created_at DESC LIMIT ?";
+        String sql = "SELECT product_id FROM user_behaviors WHERE user_id = ? AND event_type = 'click' ORDER BY timestamp DESC LIMIT ?";
         try (Connection conn = clickHouseDataSource.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setLong(1, userId);

@@ -8,15 +8,16 @@ server:
 spring:
   # ????????
   datasource:
-    url: jdbc:mysql://localhost:3306/online_mall?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
-    username: root
-    password: 10086111
-    driver-class-name: com.mysql.cj.jdbc.Driver
-  clickhouse:
-    url: jdbc:clickhouse://localhost:8123/online_mall
-    username: default
-    password: 10086111
-    driver-class-name: ru.yandex.clickhouse.ClickHouseDriver
+    mysql:
+      url: jdbc:mysql://localhost:3306/online_mall?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+      username: root
+      password: 10086111
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    clickhouse:
+      url: jdbc:clickhouse://localhost:8123/online_mall
+      username: default
+      password: 10086111
+      driver-class-name: com.clickhouse.jdbc.ClickHouseDriver
 
 
 # Jackson JSON ?? (????API?JSON??)

@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@MapperScan("com.example.onlinemall.mapper") // 添加这行，指定Mapper接口所在的包
 @EnableScheduling
 public class OnlineMallApplication {
 
