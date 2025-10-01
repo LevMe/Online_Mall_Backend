@@ -18,6 +18,13 @@ spring:
       username: default
       password: 10086111
       driver-class-name: com.clickhouse.jdbc.ClickHouseDriver
+      hikari:
+        # 在将连接从池中取出时，检查其有效性。
+        connection-test-query: "SELECT 1"
+        # 建议设置一个最大生命周期，强制替换旧连接，比如30分钟。
+        max-lifetime: 1800000
+        # 空闲连接的最大存活时间，比如10分钟。
+        idle-timeout: 600000
 
 
 # Jackson JSON ?? (????API?JSON??)

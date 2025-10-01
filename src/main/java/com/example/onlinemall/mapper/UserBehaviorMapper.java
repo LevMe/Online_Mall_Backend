@@ -23,8 +23,34 @@ public class UserBehaviorMapper {
         this.clickHouseDataSource = clickHouseDataSource;
     }
 
-    // ... a
-    // ... (mapper中的其他方法保持不变)
+    /**
+     * 查询所有用户行为，并按时间戳降序排序
+     * @return 用户行为列表
+     */
+    public List<UserBehavior> findAllOrderByTimestampDesc(int limit) {
+        List<UserBehavior> behaviors = new ArrayList<>();
+        // SQL查询语句，按时间倒序排列并限制数量
+        String sql = "SELECT user_id, product_id, event_type, timestamp FROM user_behaviors ORDER BY timestamp DESC LIMIT ?";
+        try (Connection conn = clickHouseDataSource.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, limit); // 设置LIMIT参数
+
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                UserBehavior behavior = new UserBehavior();
+                behavior.setUserId(rs.getLong("user_id"));
+                behavior.setProductId(rs.getLong("product_id"));
+                behavior.setEventType(rs.getString("event_type"));
+                behavior.setTimestamp(rs.getTimestamp("timestamp"));
+                behaviors.add(behavior);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("查询ClickHouse所有用户行为时出错", e);
+        }
+        return behaviors;
+    }
+
     public Long selectCount(Long userId) {
         // SQL查询语句，注意表名应为 'user_behaviors'
         String sql = "SELECT count() FROM user_behaviors WHERE user_id = ?";

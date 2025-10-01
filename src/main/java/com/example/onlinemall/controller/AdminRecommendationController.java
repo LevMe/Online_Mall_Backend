@@ -18,6 +18,6 @@ public class AdminRecommendationController {
     public Result<String> triggerTraining() {
         // 为了不阻塞接口，可以采用异步执行
         new Thread(() -> recommendationService.triggerModelTraining()).start();
-        return Result.success("Recommendation model training process has been triggered in the background.");
+        return Result.success("模型已开始执行离线训练 (异步模式)");
     }
 }
